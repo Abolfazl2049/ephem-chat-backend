@@ -8,10 +8,10 @@
     "dev": "tsx watch src/app.ts",
     "static": "tsx src/app.ts",
     "compile": "npx tsc --noCheck",
-    "minify": "node scripts/terser-minify.js",
+    "minify": "node commands/terser-minify.js",
     "build": "yarn compile && yarn minify",
     "render": "yarn && yarn build",
-    "swagger": "tsx scripts/swagger.ts",
+    "swagger": "tsx commands/swagger.ts",
     "migrate": "npx sequelize-cli db:migrate"
   },
   "keywords": [],

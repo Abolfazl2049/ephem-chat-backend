@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import sequelize from "./libs/sequelize/index.js";
 import cors from "cors";
-import {errorHandler} from "./gears/error-handler.js";
+import {errorHandler} from "./gears/error/error-handler.js";
 import {appRouter} from "./router.js";
 import swaggerUi from "swagger-ui-express";
 import {admin, adminRouter} from "./libs/adminjs/index.js";
