@@ -1,0 +1,14 @@
+node_modules
+pnpm-lock.yaml
+package-lock.json
+data
+dist
+.yarn
+yarn.lock
+.adminjs
+.env
+priv_key.pem
+pub_key.pem
+db_ssl.pem
+media
+app.db
