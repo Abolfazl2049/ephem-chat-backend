@@ -1,5 +1,6 @@
 import {RequestHandler} from "express";
 import {Session} from "./entities.js";
+import {resetSessionExpiresAt} from "./utils.js";
 
 const sessionMiddleware: RequestHandler = async (req, res, next) => {
   try {
@@ -14,6 +15,7 @@ const sessionMiddleware: RequestHandler = async (req, res, next) => {
       res.status(401).end();
       return;
     }
+    resetSessionExpiresAt(session);
 
     req.user = session.user;
     next();
