@@ -2,6 +2,8 @@ import AdminJS, {DefaultAuthProvider} from "adminjs";
 import AdminJSExpress from "@adminjs/express";
 import * as AdminJSSequelize from "@adminjs/sequelize";
 import {dark, light, noSidebar} from "@adminjs/themes";
+import { User } from "#src/services/user/entities.js";
+import { Session } from "#src/services/session/entities.js";
 const authenticate = (data: {email: string; password: string}, ctx: any) => {
   if (data.email === "admin" && data.password === "abooliIsKing") return {email: data.email};
   else return null;
@@ -17,7 +19,7 @@ AdminJS.registerAdapter({
 });
 
 const admin = new AdminJS({
-  resources: [],
+  resources: [User , Session , ],
   defaultTheme: light.id,
   availableThemes: [dark, light, noSidebar],
   branding: {

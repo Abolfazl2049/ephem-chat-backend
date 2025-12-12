@@ -1,13 +1,8 @@
 import {APP_PORT} from "#src/services/shared/constants/index.js";
 import generateSwagger from "swagger-autogen";
 
-// Create a sample response object
-const responseJson = {
-  ok: true,
-  data: '#swagger.responses[200].schema.$ref = "#/definitions/ResponseSchema"'
-};
-
-const swaggerDocument = {
+const swaggerData = {
+  swagger: "2.0",
   info: {
     version: "1.0.0",
     title: "Ephem Chat Backend",
@@ -36,23 +31,7 @@ const swaggerDocument = {
     }
   ]
 };
-
-const doc = {
-  swagger: "2.0",
-  ...swaggerDocument
-};
-
 const swaggerFile = "../swagger_output.json";
 const apiRouteFile = ["../src/router.ts"];
 
-// Configure swagger-autogen to detect responses
-const options = {
-  openapi: "3.0.0",
-  language: "en-US",
-  disableLogs: false,
-  autoHeaders: true,
-  autoQuery: true,
-  autoBody: true
-};
-
-generateSwagger(swaggerFile, apiRouteFile, doc);
+generateSwagger(swaggerFile, apiRouteFile, swaggerData);

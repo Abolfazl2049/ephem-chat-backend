@@ -3,12 +3,15 @@ import {MyError} from "./model.js";
 let errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err) {
     if (err instanceof MyError) {
-      res.sendStatus(err.statusCode).send({
+      res.status(err.statusCode).json({
         message: err.message,
         data: err.data
       });
     } else {
-      res.sendStatus(500).send(err.message ?? err);
+      res.status(500).json({
+        message: err.message ?? "Internal Server Error",
+        data: err
+      });
     }
   }
 };

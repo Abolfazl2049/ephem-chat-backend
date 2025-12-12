@@ -7,7 +7,8 @@ class User extends Model {
 User.init(
   {
     id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.UUID,
+      defaultValue: sequelize.literal("gen_random_uuid()"),
       primaryKey: true
     },
     name: {

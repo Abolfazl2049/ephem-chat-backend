@@ -3,13 +3,14 @@ import express from "express";
 import sequelize from "./libs/sequelize/index.js";
 import cors from "cors";
 import {errorHandler} from "./gears/error/error-handler.js";
-import {appRouter} from "./router.js";
+import {router} from "./router.js";
 import swaggerUi from "swagger-ui-express";
 import {admin, adminRouter} from "./libs/adminjs/index.js";
 import {applyLimiter} from "./libs/limiter/index.js";
 import routeProtector from "./gears/route-protector.js";
 import {requestLogger} from "./gears/logger.js";
 import {APP_PORT} from "./services/shared/constants/index.js";
+import "./libs/cron/index.js"; // initialize cron jobs
 const app = express();
 const swaggerJsonFilePath = await import("../swagger_output.json", {
   with: {type: "json"}
@@ -28,14 +29,14 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 //swagger route
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsonFilePath));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerJsonFilePath.default || swaggerJsonFilePath));
 
 // custom middlewares
 app.use(routeProtector);
 app.use(requestLogger);
 
 // app router
-app.use(appRouter);
+app.use(router);
 
 // error handler
 app.use(errorHandler);
