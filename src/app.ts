@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import http from "http";
 import sequelize from "./libs/sequelize/index.js";
 import cors from "cors";
 import {errorHandler} from "./gears/error/error-handler.js";
@@ -10,9 +11,11 @@ import {applyLimiter} from "./libs/limiter/index.js";
 import routeProtector from "./gears/route-protector.js";
 import {requestLogger} from "./gears/logger.js";
 import {APP_PORT} from "./services/shared/constants/index.js";
-import "./libs/cron/index.js"; // initialize cron jobs
-// import "./types/express.js";
+import "./libs/cron/index.js";
+import {initSocketIO} from "./services/socket/app.js";
+
 const app = express();
+const server = http.createServer(app);
 const swaggerJsonFilePath = await import("../swagger_output.json", {
   with: {type: "json"}
 });
@@ -42,8 +45,11 @@ app.use(router);
 // error handler
 app.use(errorHandler);
 
+// initialize socket.io
+initSocketIO(server);
+
 // app listen
-app.listen(APP_PORT, () => {
+server.listen(APP_PORT, () => {
   sequelize
     .sync({force: false})
     .then(() => {
@@ -53,3 +59,4 @@ app.listen(APP_PORT, () => {
       console.log("err", err);
     });
 });
+export {app, server};

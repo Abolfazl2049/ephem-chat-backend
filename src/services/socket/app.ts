@@ -1,0 +1,32 @@
+import {Server as HTTPServer} from "http";
+import {Server} from "socket.io";
+
+let io: Server;
+
+const initSocketIO = (server: HTTPServer) => {
+  io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+
+  io.on("connection", socket => {
+    console.log("User connected:", socket.id);
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected:", socket.id);
+    });
+  });
+
+  return io;
+};
+
+const getIO = () => {
+  if (!io) {
+    throw new Error("Socket.IO not initialized");
+  }
+  return io;
+};
+
+export {initSocketIO, getIO};
