@@ -4,6 +4,6 @@ import {getMyProfile} from "./handlers.js";
 
 const router = Router();
 router.use(sessionMiddleware);
-router.get("/my-profile", getMyProfile);
+router.get("/me", getMyProfile);
 
 export {router};

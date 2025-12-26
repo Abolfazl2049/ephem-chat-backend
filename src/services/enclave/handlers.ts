@@ -2,10 +2,10 @@ import {RequestHandler} from "express";
 import {Enclave} from "./entities.js";
 import {Op} from "sequelize";
 import {Pagination} from "../shared/models/pagination.js";
-import {MyError} from "#src/gears/error/model.js";
 import {ErrorResponse} from "#src/gears/response/error.model.js";
 import moment from "moment";
 import {validateReqSchema} from "#src/libs/validator/utils.js";
+import {SuccessResponse} from "#src/gears/response/sucess.model.js";
 
 const getMyEnclaves: RequestHandler = async (req, res, next) => {
   try {
@@ -19,6 +19,7 @@ const getMyEnclaves: RequestHandler = async (req, res, next) => {
           [Op.contains]: [userId]
         }
       },
+      attributes: ["id", "expiresAt", "createdAt", "updatedAt"],
       offset: (page - 1) * limit,
       limit
     });
@@ -29,7 +30,7 @@ const getMyEnclaves: RequestHandler = async (req, res, next) => {
   }
 };
 
-const getMyEnclavesById: RequestHandler = async (req, res, next) => {
+const getMyEnclaveById: RequestHandler = async (req, res, next) => {
   try {
     const userId = req.user!;
 
@@ -39,13 +40,14 @@ const getMyEnclavesById: RequestHandler = async (req, res, next) => {
         users: {
           [Op.contains]: [userId]
         }
-      }
+      },
+      attributes: ["id", "expiresAt", "createdAt", "updatedAt"]
     });
     if (enclave) {
       enclave.update({
         expiresAt: moment().add(30, "days").toDate()
       });
-      res.status(200).json(enclave);
+      res.status(200).json(new SuccessResponse({data: enclave}));
     } else {
       res.status(404).json(new ErrorResponse({message: "Enclave not found"}));
       return;
@@ -55,4 +57,4 @@ const getMyEnclavesById: RequestHandler = async (req, res, next) => {
   }
 };
 
-export {getMyEnclaves, getMyEnclavesById};
+export {getMyEnclaves, getMyEnclaveById};
