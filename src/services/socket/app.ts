@@ -12,7 +12,6 @@ const initSocketIO = (server: HTTPServer) => {
       methods: ["GET", "POST"]
     }
   });
-
   // Register namespaces
   registerMatchingNamespace(io);
   registerSignalingNamespace(io);

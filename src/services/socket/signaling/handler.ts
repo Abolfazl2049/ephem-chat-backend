@@ -8,30 +8,12 @@ export const registerSignalingNamespace = (io: Server) => {
   const userSockets = new Map<string, MySocket>();
 
   signaling.on("connection", async (socket: MySocket) => {
-    const userId = socket.handshake.auth.userId;
-    const enclaveId = socket.handshake.auth.enclaveId;
-    try {
-      const user = await User.findByPk(userId);
-      const enclave = await Enclave.findByPk(enclaveId);
-      if (user && enclave) {
-        socket.data.user = user;
-        socket.data.enclave = enclave;
-        socket.join(enclaveId);
-        userSockets.set(userId, socket);
-
-        console.log("User connected to signaling:", socket.id, "userId:", userId);
-      } else {
-        socket.disconnect();
-      }
-    } catch (error) {
-      console.error("Error during signaling connection:", error);
-      socket.disconnect();
-    }
+    // events
 
     // Join
     socket.on("join", data => {
-      socket.to(enclaveId).emit("join", {
-        userId: socket.data?.user.id,
+      socket.in(enclaveId).emit("join", {
+        userId: socket.data?.user?.id,
         enclaveId: enclaveId
       });
     });
@@ -43,7 +25,7 @@ export const registerSignalingNamespace = (io: Server) => {
         targetSocket.emit("offer", {
           from: socket.id,
           userId: socket.data?.user.id,
-          offer: data.offer,
+          sdp: data.sdp,
           enclaveId: enclaveId
         });
       }
@@ -56,7 +38,7 @@ export const registerSignalingNamespace = (io: Server) => {
         targetSocket.emit("answer", {
           from: socket.id,
           userId: socket.data?.user.id,
-          answer: data.answer,
+          sdp: data.sdp,
           enclaveId: enclaveId
         });
       }
@@ -83,5 +65,26 @@ export const registerSignalingNamespace = (io: Server) => {
       });
       userSockets.delete(userId);
     });
+
+    // auth
+    const userId = socket.handshake.auth.userId;
+    const enclaveId = socket.handshake.auth.enclaveId;
+    try {
+      const user = await User.findByPk(userId);
+      const enclave = await Enclave.findByPk(enclaveId);
+
+      if (user && enclave) {
+        socket.data.user = user;
+        socket.data.enclave = enclave;
+        socket.emit("setup");
+        socket.join(enclaveId);
+        userSockets.set(userId, socket);
+      } else {
+        socket.disconnect();
+      }
+    } catch (error) {
+      console.error("Error during signaling connection:", error);
+      socket.disconnect();
+    }
   });
 };
