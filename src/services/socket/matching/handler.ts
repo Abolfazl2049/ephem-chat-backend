@@ -22,7 +22,7 @@ const registerMatchingNamespace = (io: Server) => {
     }
 
     socket.on("disconnect", () => {
-      console.log("User disconnected from matching:", socket.id, "userId:", socket.data?.user.id);
+      console.log("User disconnected from matching:", socket.id, "userId:", socket.data?.user?.id);
     });
   });
 };

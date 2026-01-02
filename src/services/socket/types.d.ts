@@ -6,8 +6,8 @@ interface MySocket extends Socket {
   data: SocketData;
 }
 interface SocketData {
-  user: User;
+  user?: User;
   status: "searching" | "processing";
-  enclave: Enclave;
+  enclave?: Enclave;
 }
 export {MySocket, SocketData};

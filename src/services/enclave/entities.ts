@@ -1,9 +1,10 @@
 import {DataTypes, Model, Op} from "sequelize";
 import sequelize from "#src/libs/sequelize/index.js";
 class Enclave extends Model {
-  declare id: DataTypes.AbstractDataTypeConstructor;
+  declare id: string;
   declare expiresAt: Date;
-  declare users: Array<DataTypes.AbstractDataTypeConstructor>;
+  declare users?: Array<string>;
+  declare logs: Array<{description: string; createdAt: string}>;
 }
 Enclave.init(
   {
@@ -18,6 +19,10 @@ Enclave.init(
     },
     users: {
       type: DataTypes.ARRAY(DataTypes.UUID),
+      defaultValue: []
+    },
+    logs: {
+      type: DataTypes.ARRAY(DataTypes.JSON),
       defaultValue: []
     }
   },

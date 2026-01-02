@@ -14,7 +14,8 @@ export const registerSignalingNamespace = (io: Server) => {
     socket.on("join", data => {
       socket.in(enclaveId).emit("join", {
         userId: socket.data?.user?.id,
-        enclaveId: enclaveId
+        enclaveId: enclaveId,
+        userName: socket.data.user?.name
       });
     });
 
@@ -24,9 +25,10 @@ export const registerSignalingNamespace = (io: Server) => {
       if (targetSocket) {
         targetSocket.emit("offer", {
           from: socket.id,
-          userId: socket.data?.user.id,
+          userId: socket.data?.user?.id,
           sdp: data.sdp,
-          enclaveId: enclaveId
+          enclaveId: enclaveId,
+          userName: socket.data.user?.name
         });
       }
     });
@@ -37,7 +39,7 @@ export const registerSignalingNamespace = (io: Server) => {
       if (targetSocket) {
         targetSocket.emit("answer", {
           from: socket.id,
-          userId: socket.data?.user.id,
+          userId: socket.data?.user?.id,
           sdp: data.sdp,
           enclaveId: enclaveId
         });
@@ -50,20 +52,25 @@ export const registerSignalingNamespace = (io: Server) => {
       if (targetSocket) {
         targetSocket.emit("candidate", {
           from: socket.id,
-          userId: socket.data?.user.id,
+          userId: socket.data?.user?.id,
           candidate: data.candidate,
           enclaveId: enclaveId
         });
       }
     });
 
-    socket.on("disconnect", () => {
-      console.log("User disconnected from signaling:", socket.id, "userId:", socket.data?.user.id);
+    socket.on("disconnect", async () => {
+      console.log("User disconnected from signaling:", socket.id, "userId:", socket.data?.user?.id);
       socket.to(enclaveId).emit("left", {
-        userId: socket.data?.user.id,
-        enclaveId: enclaveId
+        userId: socket.data?.user?.id,
+        enclaveId: enclaveId,
+        userName: socket.data.user?.name
       });
+      socket._cleanup();
+      socket.disconnect(true);
+      socket.leave(enclaveId);
       userSockets.delete(userId);
+      console.log("user socket", userSockets.size, "sockets", (await socket.in(enclaveId).fetchSockets()).length);
     });
 
     // auth

@@ -1,7 +1,7 @@
 import {DataTypes, Model} from "sequelize";
 import sequelize from "#src/libs/sequelize/index.js";
 class User extends Model {
-  declare id: DataTypes.AbstractDataTypeConstructor;
+  declare id: string;
   declare name: string;
 }
 User.init(
