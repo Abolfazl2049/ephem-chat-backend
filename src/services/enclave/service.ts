@@ -5,7 +5,8 @@ import {addUserToEnclave} from "./utils.js";
 async function createEnclave(users: User[]) {
   const enclave = Enclave.build({});
   for (const user of users) {
-    addUserToEnclave(enclave, user);
+    const {logs, users} = addUserToEnclave(enclave, user);
+    enclave.set({logs, users});
   }
   await enclave.save();
   return enclave;
