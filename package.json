@@ -59,6 +59,6 @@
   "imports": {
     "#src/*": "./dist/src/*",
     "#root/*": "./dist/*",
-    "#services/*": "./dist/src/*"
+    "#services/*": "./dist/src/services/*"
   }
 }
