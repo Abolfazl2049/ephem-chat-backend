@@ -21,6 +21,7 @@ const getDispatchesByEnclaveId: RequestHandler = async (req, res, next) => {
         }
       ],
       attributes: ["content", "id", "createdAt", "updatedAt"],
+      order: [["createdAt", "DESC"]],
       offset: (page - 1) * limit,
       limit
     });

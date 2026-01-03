@@ -23,7 +23,8 @@ const getMyEnclaves: RequestHandler = async (req, res, next) => {
       },
       attributes: ["id", "expiresAt", "createdAt", "updatedAt"],
       offset: (page - 1) * limit,
-      limit
+      limit,
+      order: [["createdAt", "DESC"]]
     });
     const {hasNext, hasPrev} = pagination.setCount(count);
     res.status(200).json({rows, limit, count, hasNext, hasPrev});
