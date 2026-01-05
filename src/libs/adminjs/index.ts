@@ -6,14 +6,19 @@ import {User} from "#src/services/user/entities.js";
 import {Session} from "#src/services/session/entities.js";
 import {Enclave} from "#src/services/enclave/entities.js";
 import {Dispatch} from "#src/services/enclave/dispatch/entities.js";
-const authenticate = (data: {email: string; password: string}, ctx: any) => {
-  if (data.email === "admin" && data.password === "abooliIsKing") return {email: data.email};
+import "dotenv/config.js";
+import process from "process";
+const authenticate: DefaultAuthProvider["authenticate"] = async (data: {email: string; password: string}, ctx: any) => {
+  const envUsername = process.env.ADMIN_PANEL_USERNAME;
+  const envPass = process.env.ADMIN_PANEL_PASS;
+  if (envPass && envUsername && data.email === envUsername && data.password === envPass) return {email: data.email};
   else return null;
 };
 
 const authProvider = new DefaultAuthProvider({
+  authenticate,
   // @ts-ignore
-  authenticate
+  componentLoader: () => {}
 });
 AdminJS.registerAdapter({
   Resource: AdminJSSequelize.Resource,
@@ -22,7 +27,7 @@ AdminJS.registerAdapter({
 
 const admin = new AdminJS({
   resources: [User, Session, Enclave, Dispatch],
-  defaultTheme: light.id,
+  defaultTheme: dark.id,
   availableThemes: [dark, light, noSidebar],
   branding: {
     companyName: "EphemChat"
