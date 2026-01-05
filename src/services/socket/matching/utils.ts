@@ -28,11 +28,12 @@ async function onMatchFound(socket1: MySocket, socket2: MySocket) {
   socket1.emit("matchFound");
   socket2.emit("matchFound");
   try {
-    const enclave = await createEnclave([socket1.data.user, socket2.data.user]);
+    const enclave = await createEnclave([socket1.data.user!, socket2.data.user!]);
     socket1.emit("enclaveCreated", {enclaveId: enclave.id});
-    socket2.emit("enclaveCreated", {enclaveId: enclave.id});
-    socket1.disconnect();
-    socket2.disconnect();
+
+    setTimeout(() => {
+      socket2.emit("enclaveCreated", {enclaveId: enclave.id});
+    }, 3000);
   } catch (error) {
     console.error("Error creating enclave:", error);
     socket1.emit("matchFailed");
