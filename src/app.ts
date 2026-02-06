@@ -60,3 +60,4 @@ server.listen(APP_PORT, () => {
     });
 });
 export {app, server};
+export default {app, server};
